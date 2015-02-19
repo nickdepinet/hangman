@@ -77,9 +77,6 @@ class Hangman():
 
 
 if __name__ == "__main__":
-    words = []
-    with open(words.text) as f:
-        words = readline(f)
     man = Hangman("test")
     man.play()
         
