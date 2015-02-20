@@ -20,25 +20,20 @@ class AI():
                     self.words[len(w)].append(w)
                 else:
                     self.words[len(w)] = [w]
-        self.possible = self.words[len(self.eng.current)]
+        self.possible = list(set(self.words[len(self.eng.current)]))
 
     def trim_possible(self):
         cur = ''.join(self.eng.current)
-        print "Current: " + ''.join(cur) + ".\n"
-        print "Pre Length: " + str(len(self.possible))
-        #trim = []
+        print "Pre Trim Length: " + str(len(self.possible))
         for p in self.possible[:]:
             for x in range(len(cur)):
                 if not cur[x] == '_':
                     if not p[x] == cur[x]:
                         #print "p: " + p
                         #print p[x] + " not equal " + cur[x] + " at " + str(x)
-                        #trim.append(p)
                         self.possible.remove(p)
                         break
-        #for t in trim:
-        #    self.possible.remove(t)
-        print "Post Length: " + str(len(self.possible))
+        print "Post Trim Length: " + str(len(self.possible))
         if len(self.possible)<20:
             print "Post Trim: "
             print self.possible
@@ -64,12 +59,12 @@ class AI():
     def play(self):
         in_play = True
         turns = 0
+        print self.eng
         while in_play:
             turns += 1
             self.move()
             in_play = not self.eng.won() and not self.eng.lost()
             print self.eng
-            val = raw_input('Enter to step')
             #time.sleep(0.5)
         print self.eng
         print "The computer won in " + str(turns) + " turns.\n" if self.eng.won() else "That word was too hard, the ai lost.\n"
