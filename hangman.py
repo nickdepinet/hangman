@@ -26,7 +26,7 @@ class Hangman():
     def guess(self, letter):
         if len(letter) > 1:
             if self.isGoal(letter):
-                self.current = letter.split('')
+                self.current = list(letter)
                 return True
             self.failed.append(letter)
             return False
@@ -48,7 +48,7 @@ class Hangman():
         abd = " | " if lf>4 else "   "
         legs = "/  " if lf==6 else "/ \\" if lf>6 else "   "
         cur = ''.join(self.current)
-        done = ''.join(self.failed)
+        done = ','.join(self.failed)
         out = "".join([
                 "\nWelcome to hangman!\n\n"
                 "  ____\n",
@@ -58,7 +58,7 @@ class Hangman():
                 " " + abd + " | \n",
                 " " + legs + " |\n",
                 "     |\n",
-                " ____|____\n\n",
+                " ____|____\n",
                 "Current State: " + cur + "\n",
                 "Failed Guesses: " + done + "\n\n"])
         return out
