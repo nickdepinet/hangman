@@ -16,11 +16,15 @@ class AI():
         with open(dictionary) as f:
             for line in f:
                 w = line.strip().lower()
-                if len(w) in self.words:
-                    self.words[len(w)].append(w)
-                else:
-                    self.words[len(w)] = [w]
-        self.possible = list(set(self.words[len(self.eng.current)]))
+                if len(w) == len(self.eng.current):
+                    self.possible.append(w)
+        self.possible = list(set(self.possible))
+                #uncomment to allow multiple word guesses
+                #if len(w) in self.words:
+                #    self.words[len(w)].append(w)
+                #else:
+                #    self.words[len(w)] = [w]
+        #self.possible = list(set(self.words[len(self.eng.current)]))
 
     def trim_possible(self):
         cur = ''.join(self.eng.current)
