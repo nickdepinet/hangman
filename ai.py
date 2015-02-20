@@ -30,6 +30,9 @@ class AI():
         cur = ''.join(self.eng.current)
         print "Pre Trim Length: " + str(len(self.possible))
         for p in self.possible[:]:
+            for f in self.eng.failed:
+                if f in p:
+                    self.possible.remove(p)
             for x in range(len(cur)):
                 if not cur[x] == '_':
                     if not p[x] == cur[x]:
@@ -48,7 +51,9 @@ class AI():
             self.eng.guess(self.possible.pop())
         else:
             for p in self.possible:
-                for c in p:
+                # Find the number of words a letter is in
+                # More useful than total appearances
+                for c in set(p):
                     if c in freq_dict:
                         freq_dict[c] += 1
                     else:
@@ -58,17 +63,17 @@ class AI():
             while next_ltr in self.eng.failed or next_ltr in self.eng.current:
                 next_ltr = self.freq.pop()
             self.eng.guess(next_ltr)
-        self.trim_possible()
+        if not self.eng.won():
+            self.trim_possible()
         
     def play(self):
         in_play = True
         turns = 0
-        print self.eng
         while in_play:
+            print self.eng
             turns += 1
             self.move()
             in_play = not self.eng.won() and not self.eng.lost()
-            print self.eng
             #time.sleep(0.5)
         print self.eng
         print "The computer won in " + str(turns) + " turns.\n" if self.eng.won() else "That word was too hard, the ai lost.\n"
