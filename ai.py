@@ -65,6 +65,7 @@ class AI():
     def word_freq(self):
         wfreq = sorted(self.wpossible, key=operator.itemgetter(1))
         word = set(wfreq.pop()[0])
+        print "Word: " + ''.join(word)
         next_ltr = word.pop()
         while next_ltr in self.eng.failed or next_ltr in self.eng.current:
             next_ltr = word.pop()
@@ -90,8 +91,20 @@ class AI():
                         freq_dict[c] += 1
                     else:
                         freq_dict[c] = 1
-            self.freq = [x for x in sorted(freq_dict, key=freq_dict.get) if x not in self.eng.failed and x not in self.eng.current]
-            next_ltr = self.freq.pop()
+                for f in set(self.eng.failed):
+                    if f in freq_dict: del freq_dict[f]
+                for c in set(self.eng.current):
+                    if c in freq_dict: del freq_dict[c]
+            
+            #self.freq = [x for x in sorted(freq_dict, key=freq_dict.get)]
+            self.freq = sorted(freq_dict.items(), key=operator.itemgetter(1))
+            print "Letter Freq: "
+            print self.freq
+            next_ltr = self.freq[-1][0]
+            if len(self.freq) > 1:
+                if len(set(x[1] for x in self.freq)) <= 1:
+                    next_ltr = self.word_freq()
+            print "Guessing: " + next_ltr
             res = self.eng.guess(next_ltr)
         if not self.eng.won():
             if res:
