@@ -68,7 +68,7 @@ class Hangman():
         while in_play:
             print self
 
-            gs = raw_input("Make a Guess! (One letter or the whole thing): ")
+            gs = raw_input("Make a Guess! (One letter or the whole thing): ").lower()
             print gs
             print "Good Guess!\n" if self.guess(gs) else "Oh No! Try Another Letter!\n"
             in_play = not self.won() and not self.lost()

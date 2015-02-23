@@ -53,7 +53,12 @@ class AI():
             for p in self.possible:
                 # Find the number of words a letter is in
                 # More useful than total appearances
-                for c in set(p):
+                # Only in big words
+                if len(self.eng.current) > 5:
+                    ltrs = set(p)
+                else:
+                    ltrs = p
+                for c in ltrs:
                     if c in freq_dict:
                         freq_dict[c] += 1
                     else:
