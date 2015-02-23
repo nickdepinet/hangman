@@ -8,17 +8,27 @@ class AI():
     
     words = {}
     freq = []
+    wpossible = set()
     possible = set()
     eng = None
 
-    def __init__(self, dictionary, man):
+    def __init__(self, dictionary, man, wcount):
         self.eng = man
+        curlen = len(self.eng.current)
         #Build the word dictionary
         with open(dictionary) as f:
             for line in f:
                 w = line.strip().lower()
-                if len(w) == len(self.eng.current):
+                if len(w) == curlen:
                     self.possible.add(w)
+        with open(wcount) as c:
+            for line in c:
+                w = line.strip().split()
+                if len(w[0]) == curlen:
+                    w[0] = w[0].lower()
+                    w[1] = int(w[1])
+                    self.wpossible.add(tuple(w))
+                    
 
     def trim_possible_s(self,guess):
         cur = [i for i,x in enumerate(self.eng.current) if x == guess]
@@ -27,20 +37,40 @@ class AI():
 
             if not all(p[x] == guess for x in cur):
                 self.possible.remove(p)
+
+        for w in list(self.wpossible):
+            if not all(w[0][x] == guess for x in cur):
+                self.wpossible.remove(w)
         print "Post Trim Length: " + str(len(self.possible))
         if len(self.possible)<20:
             print "Post Trim: "
             print self.possible
-    
+            if len(self.wpossible)<20:
+                print self.wpossible
+
     def trim_possible_f(self,guess):
         cur = ''.join(self.eng.current)
         print "Pre Trim Length: " + str(len(self.possible))
         tmp = filter(lambda x: guess not in set(x), self.possible)
         self.possible = tmp
+        tmp = filter(lambda x: guess not in set(x[0]), self.wpossible)
+        self.wpossible = tmp
         print "Post Trim Length: " + str(len(self.possible))
         if len(self.possible)<20:
             print "Post Trim: "
             print self.possible
+            if len(self.wpossible) < 20:
+                print self.wpossible
+
+    def word_freq(self):
+        wfreq = sorted(self.wpossible, key=operator.itemgetter(1))
+        word = set(wfreq.pop()[0])
+        next_ltr = word.pop()
+        while next_ltr in self.eng.failed or next_ltr in self.eng.current:
+            next_ltr = word.pop()
+        return next_ltr
+        
+            
 
     def move(self):
         freq_dict = {}
@@ -60,10 +90,8 @@ class AI():
                         freq_dict[c] += 1
                     else:
                         freq_dict[c] = 1
-            self.freq = [x for x in sorted(freq_dict, key=freq_dict.get)]
+            self.freq = [x for x in sorted(freq_dict, key=freq_dict.get) if x not in self.eng.failed and x not in self.eng.current]
             next_ltr = self.freq.pop()
-            while next_ltr in self.eng.failed or next_ltr in self.eng.current:
-                next_ltr = self.freq.pop()
             res = self.eng.guess(next_ltr)
         if not self.eng.won():
             if res:
@@ -85,12 +113,12 @@ class AI():
 
 if __name__ == "__main__":
     import cProfile
-    if not len(sys.argv) == 3:
-        print "Usage: python ai.py word_file goal_word"
+    if not len(sys.argv) == 4:
+        print "Usage: python ai.py word_file word_count_file goal_word"
         sys.exit(1)
     
-    man = Hangman(sys.argv[2].strip().lower())
-    bot = AI(sys.argv[1], man)
+    man = Hangman(sys.argv[3].strip().lower())
+    bot = AI(sys.argv[1], man, sys.argv[2])
 
     #bot.play()
 
