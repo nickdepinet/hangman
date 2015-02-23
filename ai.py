@@ -1,5 +1,6 @@
 import sys
 import time
+import operator
 
 from hangman import Hangman
 
@@ -26,20 +27,22 @@ class AI():
                 #    self.words[len(w)] = [w]
         #self.possible = list(set(self.words[len(self.eng.current)]))
 
-    def trim_possible(self):
-        cur = ''.join(self.eng.current)
+    def trim_possible_s(self,guess):
+        cur = [i for i,x in enumerate(self.eng.current) if x == guess]
         print "Pre Trim Length: " + str(len(self.possible))
         for p in self.possible[:]:
-            for f in self.eng.failed:
-                if f in p:
-                    self.possible.remove(p)
-            for x in range(len(cur)):
-                if not cur[x] == '_':
-                    if not p[x] == cur[x]:
-                        #print "p: " + p
-                        #print p[x] + " not equal " + cur[x] + " at " + str(x)
-                        self.possible.remove(p)
-                        break
+            if not all(p[x] == guess for x in cur):
+                self.possible.remove(p)
+        print "Post Trim Length: " + str(len(self.possible))
+        if len(self.possible)<20:
+            print "Post Trim: "
+            print self.possible
+    
+    def trim_possible_f(self,guess):
+        cur = ''.join(self.eng.current)
+        print "Pre Trim Length: " + str(len(self.possible))
+        tmp = filter(lambda x: guess not in set(x), self.possible)
+        self.possible = tmp
         print "Post Trim Length: " + str(len(self.possible))
         if len(self.possible)<20:
             print "Post Trim: "
@@ -67,9 +70,12 @@ class AI():
             next_ltr = self.freq.pop()
             while next_ltr in self.eng.failed or next_ltr in self.eng.current:
                 next_ltr = self.freq.pop()
-            self.eng.guess(next_ltr)
+            res = self.eng.guess(next_ltr)
         if not self.eng.won():
-            self.trim_possible()
+            if res:
+                self.trim_possible_s(next_ltr)
+            else:
+                self.trim_possible_f(next_ltr)
         
     def play(self):
         in_play = True
