@@ -8,7 +8,7 @@ class AI():
     
     words = {}
     freq = []
-    possible = []
+    possible = set()
     eng = None
 
     def __init__(self, dictionary, man):
@@ -18,19 +18,13 @@ class AI():
             for line in f:
                 w = line.strip().lower()
                 if len(w) == len(self.eng.current):
-                    self.possible.append(w)
-        self.possible = list(set(self.possible))
-                #uncomment to allow multiple word guesses
-                #if len(w) in self.words:
-                #    self.words[len(w)].append(w)
-                #else:
-                #    self.words[len(w)] = [w]
-        #self.possible = list(set(self.words[len(self.eng.current)]))
+                    self.possible.add(w)
 
     def trim_possible_s(self,guess):
         cur = [i for i,x in enumerate(self.eng.current) if x == guess]
         print "Pre Trim Length: " + str(len(self.possible))
-        for p in self.possible[:]:
+        for p in list(self.possible):
+
             if not all(p[x] == guess for x in cur):
                 self.possible.remove(p)
         print "Post Trim Length: " + str(len(self.possible))
@@ -90,6 +84,7 @@ class AI():
         print "The computer won in " + str(turns) + " turns.\n" if self.eng.won() else "That word was too hard, the ai lost.\n"
 
 if __name__ == "__main__":
+    import cProfile
     if not len(sys.argv) == 3:
         print "Usage: python ai.py word_file goal_word"
         sys.exit(1)
@@ -97,6 +92,7 @@ if __name__ == "__main__":
     man = Hangman(sys.argv[2].strip().lower())
     bot = AI(sys.argv[1], man)
 
-    bot.play()
+    #bot.play()
 
+    cProfile.run('bot.play()', sort='cumulative')
 
