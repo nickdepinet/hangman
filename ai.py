@@ -64,8 +64,9 @@ class AI():
 
     def word_freq(self):
         wfreq = sorted(self.wpossible, key=operator.itemgetter(1))
-        word = set(wfreq.pop()[0])
+        word = wfreq.pop()[0]
         print "Word: " + ''.join(word)
+        word = set(word)
         next_ltr = word.pop()
         while next_ltr in self.eng.failed or next_ltr in self.eng.current:
             next_ltr = word.pop()
