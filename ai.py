@@ -62,8 +62,10 @@ class AI():
             if len(self.wpossible) < 20:
                 print self.wpossible
 
-    def word_freq(self):
+    def word_freq(self,cur_ltr):
         wfreq = sorted(self.wpossible, key=operator.itemgetter(1))
+        if len(wfreq) == 0:
+            return cur_ltr
         word = wfreq.pop()[0]
         print "Word: " + ''.join(word)
         word = set(word)
@@ -104,7 +106,7 @@ class AI():
             next_ltr = self.freq[-1][0]
             if len(self.freq) > 1:
                 if len(set(x[1] for x in self.freq)) <= 1:
-                    next_ltr = self.word_freq()
+                    next_ltr = self.word_freq(next_ltr)
             print "Guessing: " + next_ltr
             res = self.eng.guess(next_ltr)
         if not self.eng.won():
