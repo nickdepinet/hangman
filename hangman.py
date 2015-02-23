@@ -7,7 +7,7 @@ class Hangman():
 
     goal = ""
     current = []
-    failed = []
+    failed = set([])
 
     def __init__(self, goal):
         self.goal = goal
@@ -28,14 +28,14 @@ class Hangman():
             if self.isGoal(letter):
                 self.current = list(letter)
                 return True
-            self.failed.append(letter)
+            self.failed.add(letter)
             return False
         pos = self.find(letter)
         if len(pos) > 0:
             for x in pos:
                 self.current[x] = letter
             return True
-        self.failed.append(letter)
+        self.failed.add(letter)
         return False
     
     def find(self, letter):
@@ -73,10 +73,13 @@ class Hangman():
             print "Good Guess!\n" if self.guess(gs) else "Oh No! Try Another Letter!\n"
             in_play = not self.won() and not self.lost()
         print self
-        print "Congratulations! You Won!\n" if self.won() else "Sorry, you lost :(\n"
+        print "Congratulations! You Won!\n" if self.won() else "Sorry, you lost :(\nThe word was: " + self.goal
 
 
 if __name__ == "__main__":
-    man = Hangman("test")
+    import random
+    with open('words.txt') as words:
+        word = random.choice(words.readlines()).strip()
+    man = Hangman(word)
     man.play()
         
