@@ -34,13 +34,16 @@ class AI():
         cur = [i for i,x in enumerate(self.eng.current) if x == guess]
         print "Pre Trim Length: " + str(len(self.possible))
         for p in list(self.possible):
-
-            if not all(p[x] == guess for x in cur):
-                self.possible.remove(p)
+            for x in cur:
+                if not p[x] == guess:
+                    self.possible.remove(p)
+                    break
 
         for w in list(self.wpossible):
-            if not all(w[0][x] == guess for x in cur):
-                self.wpossible.remove(w)
+            for x in cur:
+                if not w[0][x] == guess:
+                    self.wpossible.remove(w)
+                    break
         print "Post Trim Length: " + str(len(self.possible))
         if len(self.possible)<20:
             print "Post Trim: "
