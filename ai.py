@@ -28,7 +28,6 @@ class AI():
                     w[0] = w[0].lower()
                     w[1] = int(w[1])
                     self.wpossible.add(tuple(w))
-                    
 
     def trim_possible_s(self,guess):
         cur = [i for i,x in enumerate(self.eng.current) if x == guess]
@@ -38,7 +37,6 @@ class AI():
                 if not p[x] == guess:
                     self.possible.remove(p)
                     break
-
         for w in list(self.wpossible):
             for x in cur:
                 if not w[0][x] == guess:
@@ -76,8 +74,6 @@ class AI():
         while next_ltr in self.eng.failed or next_ltr in self.eng.current:
             next_ltr = word.pop()
         return next_ltr
-        
-            
 
     def move(self):
         freq_dict = {}
