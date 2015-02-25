@@ -72,6 +72,8 @@ class AI():
         word = set(word)
         next_ltr = word.pop()
         while next_ltr in self.eng.failed or next_ltr in self.eng.current:
+            if len(word) == 0:
+                word = set(wfreq.pop()[0])
             next_ltr = word.pop()
         return next_ltr
 
